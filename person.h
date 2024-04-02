@@ -28,4 +28,8 @@ public:
     void setAge(int age);
 
     std::string to_string();
+
+    void add(std::ostream &os) const;
+
+    void get(std::istream &is);
 };

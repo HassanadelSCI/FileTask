@@ -1,92 +1,87 @@
 #include <iostream>
 #include <fstream>
-#include <cstring>
 #include "person.h"
 
 using namespace std;
+int id = 1;
 
-void writePerson(person p, int id);
-
-
-void writePerson(person p, int id) {
-    ofstream outCredit{"persons_data.dat", ios::out | ios::binary};
-
-    if (!outCredit) {
-        cerr << "File could not be opened." << endl;
-        exit(EXIT_FAILURE);
+void writePerson() {
+    int age;
+    std::string last_name, first_name;
+    std::cout << "Enter last name: ";
+    std::cin >> last_name;
+    std::cout << "Enter first name: ";
+    std::cin >> first_name;
+    std::cout << "Enter age: ";
+    std::cin >> age;
+    std::fstream file("persons_data.dat", std::ios::in | std::ios::out | std::ios::binary);
+    if (!file.is_open()) {
+        std::cerr << "Error: Unable to open file for updating." << std::endl;
+        exit(0);
     }
-    outCredit.seekp(id * sizeof(person));
-
-    outCredit.write(reinterpret_cast<const char *>(&p), sizeof(person));
-
-    outCredit.close();
+    file.seekp(id * sizeof(person));
+    person p(id, age, first_name, last_name);
+    p.add(file);
+    file.close();
+    id++;
 }
 
-person getPerson(int id) {
-    ifstream inCredit("persons_data.dat", ios::in | ios::binary);
-    if (!inCredit.is_open()) {
-        cerr << "File could not be opened." << endl;
-        exit(EXIT_FAILURE);
+void getPerson() {
+    int id;
+    std::cout << "Enter ID: ";
+    std::cin >> id;
+    std::ifstream file("persons_data.dat", std::ios::binary);
+    if (!file.is_open()) {
+        std::cerr << "Error: Unable to open file for reading." << std::endl;
+        exit(0);
     }
+    file.seekg(id * sizeof(person));
+    person p;
+    p.get(file);
+    file.close();
 
-    person p2;
-    inCredit.seekg(id * sizeof(person));
-    inCredit.read(reinterpret_cast<char *>(&p2), sizeof(person));
-
-    inCredit.close(); // Close the ifstream
-    return p2;
+    if (p.getId() == id) {
+        std::cout << "Last Name: " << p.getLastName() << std::endl;
+        std::cout << "First Name: " << p.getFirstName() << std::endl;
+        std::cout << "Age: " << p.getAge() << std::endl;
+        std::cout << "ID: " << p.getId() << std::endl;
+    } else { cout << "Empty person\n"; }
 }
 
 int main() {
-    for (int i = 1; i <= 1000; ++i) {
-        person p1 = person();
+    const int NUM_PERSONS = 1000;
 
-        writePerson(p1, i - 1);
+    // Inserting 1000 blank objects into the file
+    std::ofstream file("persons_data.dat", std::ios::binary);
+    if (!file.is_open()) {
+        std::cerr << "Error: Unable to open file for writing." << std::endl;
+        return 1;
     }
-    string a;
+    for (int i = 0; i < NUM_PERSONS; ++i) {
+        person p;
+        p.add(file);
+    }
+    file.close();
 
-    int writeIndex=1;
+    int writeIndex = 1;
     int input;
-    while(true){
-        cout<<"Enter 1 to: Insert Object into the Offset Identified by ID\n"
-              "Enter 2 to: Get Object from the Index Identified by ID \n"
-              "Enter 0 to terminate\n";
+    while (true) {
+        cout << "Enter 1 to: Insert Object into the Offset Identified by ID\n"
+                "Enter 2 to: Get Object from the Index Identified by ID \n"
+                "Enter 0 to terminate\n";
         cin >> input;
         cin.ignore();
 
-        if(input == 0) {
+        if (input == 0) {
             exit(0);
         }
-        if(input == 1) {
-            string firstname;
-            string lastname;
-            int age;
-            int id = writeIndex;
-            cout << "Enter the first Name: \n";
-            getline(cin, firstname);
-            cout << "Enter the Last Name: \n";
-            getline(cin, lastname);
-            cout << "Enter the Age: ";
-            cin >> age;
-            cin.ignore();
-            person p1 = person(id, age, firstname, lastname);
-            writePerson(p1, writeIndex++);
+        if (input == 1) {
+            writePerson();
         }
-        if(input == 2) {
-            int i;
-            cin >> i;
-            person p1 = getPerson(i);
-            cout << p1.to_string();
+        if (input == 2) {
+            getPerson();
         }
     }
+
 }
 
-//for (int i = 1; i <= 5; ++i) {
-//        person p1 = person(i, i * 10, "hassan", "adel");
-//        writePerson(persons_data, p1);
-//    }
-//
-//    for (int i = 1; i <= 5; ++i) {
-//        person p = getPerson(persons_data, i);
-//        cout << p.to_string() << endl;
-//    }
