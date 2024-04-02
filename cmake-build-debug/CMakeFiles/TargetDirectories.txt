@@ -1,0 +1,3 @@
+D:/faculty/3 2nd/316/LabFiles/TaskApp/cmake-build-debug/CMakeFiles/TaskApp.dir
+D:/faculty/3 2nd/316/LabFiles/TaskApp/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/faculty/3 2nd/316/LabFiles/TaskApp/cmake-build-debug/CMakeFiles/rebuild_cache.dir
