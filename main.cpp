@@ -27,20 +27,20 @@ void writePerson() {
 }
 
 void getPerson() {
-    int id;
+    int sid;
     std::cout << "Enter ID: ";
-    std::cin >> id;
+    std::cin >> sid;
     std::ifstream file("persons_data.dat", std::ios::binary);
     if (!file.is_open()) {
         std::cerr << "Error: Unable to open file for reading." << std::endl;
         exit(0);
     }
-    file.seekg(id * sizeof(person));
+    file.seekg(sid * sizeof(person));
     person p;
     p.get(file);
     file.close();
 
-    if (p.getId() == id) {
+    if (p.getId() == sid) {
         std::cout << "Last Name: " << p.getLastName() << std::endl;
         std::cout << "First Name: " << p.getFirstName() << std::endl;
         std::cout << "Age: " << p.getAge() << std::endl;
